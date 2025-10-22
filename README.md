@@ -171,7 +171,4 @@ npm test
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Contact
-
-Your Name - [@yourusername](https://github.com/yourusername)
-
-Project Link: [https://github.com/yourusername/graph-visualizer](https://github.com/yourusername/graph-visualizer)
+Project Link: [https://github.com/tejaskesaria/graph-visualizer]
