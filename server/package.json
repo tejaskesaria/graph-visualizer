@@ -1,0 +1,8 @@
+{
+  "name": "graph-server",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "jest"
+  }
+}

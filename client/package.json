@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "test": "jest --config ./jest.config.js --runInBand"
+    "test": "jest --config ./jest.config.js --runInBand",
+    "serve": "vue-cli-service serve",
+    "build:prod": "vue-cli-service build --mode production"
   },
   "dependencies": {
     "@vitejs/plugin-vue": "^5.2.4",

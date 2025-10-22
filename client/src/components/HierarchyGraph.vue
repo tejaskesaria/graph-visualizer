@@ -28,14 +28,19 @@ export default {
   methods: {
     async fetchGraphData() {
       try {
-        const res = await fetch('http://localhost:3000/api/data');
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const json = await res.json();
-        this.graphData = json.data || [];
+        const res = await fetch('http://localhost:3000/api/graph');
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+        }
+        const data = await res.json();
+        this.graphData = data.data;
         this.hierarchyData = buildHierarchy(this.graphData);
         this.renderGraph();
-      } catch (err) {
-        console.error('Error fetching graph data:', err);
+      } catch (error) {
+        console.error('Error fetching graph data:', error);
+        // Show user-friendly error message
+        this.graphData = null;
+        this.hierarchyData = null;
       }
     },
 
