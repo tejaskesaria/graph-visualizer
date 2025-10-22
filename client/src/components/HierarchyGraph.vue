@@ -1,10 +1,12 @@
 <template>
-  <div style="display:flex">
-    <div ref="graphContainer" class="graph-container"></div>
-    <div class="sidebar" v-if="selectedNode" style="margin-left:16px; padding:8px; border-left:1px solid #ddd; width:240px;">
-      <h3>{{ selectedNode.name }}</h3>
-      <p>{{ selectedNode.description }}</p>
-      <button @click="deselect">Deselect</button>
+  <div class="graph-container">
+    <div ref="graphContainer" class="d3-container"></div>
+    <div v-if="selectedNode" class="sidebar">
+      <div class="sidebar-content">
+        <h3>{{ selectedNode.name }}</h3>
+        <p>{{ selectedNode.description }}</p>
+        <button class="deselect-btn" @click="deselect">Close</button>
+      </div>
     </div>
   </div>
 </template>
@@ -50,22 +52,33 @@ export default {
     },
 
     renderGraph() {
-      const width = 900;
-      const height = 600;
       const container = d3.select(this.$refs.graphContainer);
-      container.selectAll('*').remove();
+      container.selectAll("*").remove();
+
+      const width = 800;
+      const height = 600;
 
       const svg = container.append('svg')
         .attr('width', width)
         .attr('height', height)
+        .attr('viewBox', [0, 0, width, height])
         .append('g')
         .attr('transform', 'translate(40,20)');
+
+      // Add zoom behavior
+      const zoom = d3.zoom()
+        .scaleExtent([0.5, 2])
+        .on('zoom', (event) => {
+          svg.attr('transform', event.transform);
+        });
+
+      container.select('svg').call(zoom);
 
       const root = d3.hierarchy(this.hierarchyData);
       const treeLayout = d3.tree().size([height - 40, width - 160]);
       treeLayout(root);
 
-      // links
+      // Add links with smooth curves
       svg.selectAll('path.link')
         .data(root.links())
         .enter()
@@ -75,35 +88,47 @@ export default {
           .x(d => d.y)
           .y(d => d.x))
         .attr('fill', 'none')
-        .attr('stroke', '#ccc');
+        .attr('stroke', '#2c3e50')
+        .attr('stroke-width', 1.5)
+        .attr('stroke-opacity', 0.4);
 
-      const vm = this;
-
-      // nodes
-      const node = svg.selectAll('g.node')
+      // Add nodes with enhanced styling
+      const nodes = svg.selectAll('g.node')
         .data(root.descendants())
         .enter()
         .append('g')
         .attr('class', 'node')
-        .attr('transform', d => `translate(${d.y},${d.x})`)
-        .style('cursor', 'pointer');
+        .attr('transform', d => `translate(${d.y},${d.x})`);
 
-      node.append('circle')
+      nodes.append('circle')
         .attr('r', 6)
-        .attr('fill', d => (vm.selectedNode && vm.selectedNode.name === d.data.name) ? '#ff7043' : (d.children ? '#555' : '#999'))
-        .on('click', function(event, d) {
-          vm.selectedNode = d.data;
-          vm.renderGraph();
+        .attr('fill', d => this.selectedNode && d.data.name === this.selectedNode.name ? '#42b983' : '#3498db')
+        .attr('stroke', '#2c3e50')
+        .attr('stroke-width', 1.5)
+        .on('mouseover', function() {
+          d3.select(this)
+            .attr('r', 8)
+            .attr('fill', '#42b983');
+        })
+        .on('mouseout', function(event, d) {
+          d3.select(this)
+            .attr('r', 6)
+            .attr('fill', d.data.name === this.selectedNode?.name ? '#42b983' : '#3498db');
+        })
+        .on('click', (event, d) => {
+          this.selectedNode = d.data;
+          this.renderGraph();
         });
 
-      node.append('text')
-        .attr('dx', 10)
-        .attr('dy', 4)
+      // Add labels with better positioning
+      nodes.append('text')
+        .attr('dy', '.31em')
+        .attr('x', d => d.children ? -8 : 8)
+        .style('text-anchor', d => d.children ? 'end' : 'start')
         .text(d => d.data.name)
-        .on('click', function(event, d) {
-          vm.selectedNode = d.data;
-          vm.renderGraph();
-        });
+        .attr('fill', '#2c3e50')
+        .attr('font-family', 'Arial, sans-serif')
+        .attr('font-size', '12px');
     },
   },
 };
@@ -111,6 +136,78 @@ export default {
 
 <style scoped>
 .graph-container {
-  margin: 20px;
+  display: flex;
+  height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.d3-container {
+  flex: 1;
+  overflow: hidden;
+}
+
+.sidebar {
+  width: 300px;
+  background-color: white;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+  animation: slideIn 0.3s ease-out;
+}
+
+.sidebar-content {
+  padding: 20px;
+}
+
+.sidebar h3 {
+  color: #2c3e50;
+  margin-bottom: 10px;
+  font-size: 1.2em;
+}
+
+.sidebar p {
+  color: #34495e;
+  line-height: 1.6;
+}
+
+.deselect-btn {
+  margin-top: 15px;
+  padding: 8px 16px;
+  background-color: #42b983;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.deselect-btn:hover {
+  background-color: #3aa876;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* D3 specific styles */
+:deep(.link) {
+  transition: stroke-opacity 0.2s;
+}
+
+:deep(.link:hover) {
+  stroke-opacity: 0.8;
+}
+
+:deep(.node circle) {
+  transition: r 0.2s, fill 0.2s;
+}
+
+:deep(.node text) {
+  user-select: none;
 }
 </style>
