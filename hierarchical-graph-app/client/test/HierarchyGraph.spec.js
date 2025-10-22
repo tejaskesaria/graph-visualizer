@@ -64,6 +64,24 @@ describe('HierarchyGraph (method tests)', () => {
     expect(vm.renderGraph).toHaveBeenCalled();
   });
 
+   test('data() returns correct default values', () => {
+    const data = HierarchyGraph.data();
+    expect(data.graphData).toBeNull();
+    expect(data.hierarchyData).toBeNull();
+    expect(data.selectedNode).toBeNull();
+  });
+
+  test('mounted() calls fetchGraphData', () => {
+    const vm = {
+      fetchGraphData: jest.fn()
+    };
+
+    // call the mounted lifecycle hook directly with mock "this"
+    HierarchyGraph.mounted.call(vm);
+
+    expect(vm.fetchGraphData).toHaveBeenCalledTimes(1);
+  });
+
   test('deselect clears selectedNode and calls renderGraph', () => {
     const vm = {
       selectedNode: { name: 'B', description: 'x' },

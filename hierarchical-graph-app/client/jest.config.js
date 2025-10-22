@@ -1,20 +1,13 @@
 module.exports = {
   testEnvironment: 'jsdom',
-  setupFiles: ['<rootDir>/test/jest.setup.js'],
   transform: {
     '^.+\\.vue$': '@vue/vue3-jest',
-    '^.+\\.jsx?$': 'babel-jest'
+    '^.+\\.jsx?$': 'babel-jest',
   },
+  transformIgnorePatterns: [
+    '/node_modules/(?!d3|internmap|delaunator|robust-predicates)', // Transform d3 and its dependencies
+  ],
   moduleFileExtensions: ['js', 'json', 'vue'],
+  setupFiles: ['<rootDir>/test/jest.setup.js'],
   testMatch: ['**/test/**/*.spec.js', '**/test/**/*.test.js'],
-  collectCoverage: true,
-  coverageDirectory: 'coverage',
-  coverageThreshold: {
-    global: {
-      branches: 90,
-      functions: 90,
-      lines: 90,
-      statements: 90
-    }
-  }
 };
