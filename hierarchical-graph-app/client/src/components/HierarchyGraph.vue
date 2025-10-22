@@ -11,13 +11,14 @@
 
 <script>
 import * as d3 from 'd3';
+import { buildHierarchy } from '../utils/hierarchy';
 
 export default {
   name: 'HierarchyGraph',
   data() {
     return {
-      graphData: null,       // flat array from backend
-      hierarchyData: null,   // nested object for d3.hierarchy
+      graphData: null,
+      hierarchyData: null,
       selectedNode: null
     };
   },
@@ -27,39 +28,19 @@ export default {
   methods: {
     async fetchGraphData() {
       try {
-        const res = await fetch('http://localhost:3000/api/data'); // backend port 3000
+        const res = await fetch('http://localhost:3000/api/data');
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const json = await res.json();
         this.graphData = json.data || [];
-        this.hierarchyData = this.buildHierarchy(this.graphData);
+        this.hierarchyData = buildHierarchy(this.graphData);
         this.renderGraph();
       } catch (err) {
         console.error('Error fetching graph data:', err);
       }
     },
 
-    buildHierarchy(flat) {
-      const map = {};
-      flat.forEach(n => {
-        map[n.name] = { ...n, children: [] };
-      });
-      const roots = [];
-      flat.forEach(n => {
-        if (n.parent && n.parent !== "") {
-          const parent = map[n.parent];
-          if (parent) parent.children.push(map[n.name]);
-          else roots.push(map[n.name]); // orphaned child becomes root if parent missing
-        } else {
-          roots.push(map[n.name]);
-        }
-      });
-      if (roots.length === 1) return roots[0];
-      return { name: 'root', description: '', children: roots };
-    },
-
     deselect() {
       this.selectedNode = null;
-      // visually remove selection (re-render to reset)
       this.renderGraph();
     },
 
@@ -107,7 +88,6 @@ export default {
         .attr('fill', d => (vm.selectedNode && vm.selectedNode.name === d.data.name) ? '#ff7043' : (d.children ? '#555' : '#999'))
         .on('click', function(event, d) {
           vm.selectedNode = d.data;
-          // bring selected node into view if needed; here we simply re-render to update color
           vm.renderGraph();
         });
 

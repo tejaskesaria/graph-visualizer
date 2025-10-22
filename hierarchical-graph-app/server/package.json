@@ -1,20 +1,33 @@
 {
-  "name": "hierarchical-graph-app",
+  "name": "hierarchical-graph-server",
   "version": "1.0.0",
-  "description": "A project to visualize hierarchical graphs using Express.js and Vue.js with D3.js.",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "test": "jest --coverage"
   },
   "dependencies": {
-    "express": "^4.17.1",
     "cors": "^2.8.5",
-    "dotenv": "^10.0.0"
+    "express": "^4.18.2"
   },
   "devDependencies": {
-    "nodemon": "^2.0.7"
+    "jest": "^29.0.0",
+    "supertest": "^6.3.3"
   },
-  "author": "",
-  "license": "ISC"
+  "jest": {
+    "testEnvironment": "node",
+    "collectCoverage": true,
+    "coverageDirectory": "coverage",
+    "coverageThreshold": {
+      "global": {
+        "branches": 90,
+        "functions": 90,
+        "lines": 90,
+        "statements": 90
+      }
+    },
+    "testMatch": [
+      "<rootDir>/test/**/*.test.js"
+    ]
+  }
 }
