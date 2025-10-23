@@ -84,10 +84,12 @@ Access the application at:
 
 ## API Documentation
 
-### Get Graph Data
+### Get Graph Data (Default)
 ```http
 GET http://localhost:3000/api/graph
 ```
+
+Returns the default graph data from sample.json.
 
 **Response:**
 ```json
@@ -105,6 +107,47 @@ GET http://localhost:3000/api/graph
   ]
 }
 ```
+
+### Get New Graph Data (with Fallback)
+```http
+GET http://localhost:3000/api/graph/new
+```
+
+Returns data from new-data.json if available, falls back to sample.json if not found.
+
+**Response:**
+```json
+{
+  "data": [
+    {
+      "name": "Root",
+      "children": [
+        {
+          "name": "Child 1",
+          "children": []
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Error Response:**
+```json
+{
+  "error": "Failed to load graph data"
+}
+```
+
+Status Codes:
+- `200 OK`: Successfully retrieved data
+- `500 Internal Server Error`: Server failed to load data
+
+## Data Files
+
+The server looks for these JSON files in the `server/src/data` directory:
+- `new-data.json`: Primary data source
+- `sample.json`: Fallback data source
 
 ## Development
 
