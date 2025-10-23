@@ -1,0 +1,28 @@
+name: Branch Protection
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  protection:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Check Author Permission
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const author = context.payload.pull_request.user.login;
+            
+            const { data: permission } = await github.rest.repos.getCollaboratorPermissionLevel({
+              owner,
+              repo,
+              username: author
+            });
+            
+            if (permission.permission !== 'admin') {
+              core.setFailed('Only repository owners can merge to main branch');
+            }

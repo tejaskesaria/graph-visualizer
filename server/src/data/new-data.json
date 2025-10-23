@@ -1,0 +1,23 @@
+{
+  "data": [
+    { "name": "CEO", "description": "Chief Executive Officer, responsible for overall company strategy and leadership.", "parent": "" },
+    { "name": "Engineering Department", "description": "Handles product development, technical infrastructure, and innovation.", "parent": "CEO" },
+    { "name": "Marketing Department", "description": "Responsible for brand management, campaigns, and customer acquisition.", "parent": "CEO" },
+    { "name": "Finance Department", "description": "Manages budgeting, accounts, and financial strategy.", "parent": "CEO" },
+    
+    { "name": "Frontend Team", "description": "Develops the user interface and ensures responsive design.", "parent": "Engineering Department" },
+    { "name": "Backend Team", "description": "Builds and maintains APIs, databases, and core logic.", "parent": "Engineering Department" },
+    { "name": "QA Team", "description": "Tests and ensures product quality before release.", "parent": "Engineering Department" },
+    
+    { "name": "Social Media Team", "description": "Manages brand presence across all social platforms.", "parent": "Marketing Department" },
+    { "name": "Content Team", "description": "Creates blogs, videos, and SEO-friendly marketing content.", "parent": "Marketing Department" },
+    
+    { "name": "Accounts Team", "description": "Handles payroll, invoices, and financial records.", "parent": "Finance Department" },
+    { "name": "Audit Team", "description": "Ensures compliance and conducts internal financial reviews.", "parent": "Finance Department" },
+    
+    { "name": "UI Developer", "description": "Designs and develops modern user interfaces using HTML, CSS, and JavaScript.", "parent": "Frontend Team" },
+    { "name": "React Developer", "description": "Builds reusable front-end components using ReactJS.", "parent": "Frontend Team" },
+    { "name": "API Engineer", "description": "Designs and manages REST APIs for the application.", "parent": "Backend Team" },
+    { "name": "Database Administrator", "description": "Maintains and optimizes company databases.", "parent": "Backend Team" }
+  ]
+}

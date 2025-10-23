@@ -30,19 +30,29 @@ export default {
   methods: {
     async fetchGraphData() {
       try {
-        const res = await fetch('http://localhost:3000/api/graph');
+        // First try to fetch from new endpoint
+        let res = await fetch('http://localhost:3000/api/graph/new');
+        
+        // If new endpoint fails, fallback to original endpoint
         if (!res.ok) {
-          throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+          console.log('Falling back to original endpoint');
+          res = await fetch('http://localhost:3000/api/graph');
+          
+          if (!res.ok) {
+            throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+          }
         }
+
         const data = await res.json();
         this.graphData = data.data;
         this.hierarchyData = buildHierarchy(this.graphData);
         this.renderGraph();
       } catch (error) {
         console.error('Error fetching graph data:', error);
-        // Show user-friendly error message
         this.graphData = null;
         this.hierarchyData = null;
+        // Optionally show user-friendly error message
+        alert('Failed to load graph data. Please try again later.');
       }
     },
 
